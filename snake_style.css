@@ -1,17 +1,17 @@
+body {
+  background-color: #1e1e1e;
+}
+
 #layer2 {
-  width: 800px;
-  height: 640px;
   position: absolute;
   margin-left: auto;
   margin-right: auto;
   left: 0;
   right: 0;
-  background-color: red;
+  background: url('bg.gif');
 }
 
 #layer1 {
-  width: 800px;
-  height: 640px;
   position: absolute;
   margin-left: auto;
   margin-right: auto;
