@@ -13,24 +13,16 @@ movment = {
   'still': { x: 0, y: 0}
 }
 
-snake = {
-  tiles: [
-    { x: ((width / 32) / 2) - 2, y: (height / 32) / 2},
-    { x: ((width / 32) / 2) - 1, y: (height / 32) / 2},
-    { x: (width / 32) / 2, y: (height / 32) / 2},
-    { x: ((width / 32) / 2) + 1, y: (height / 32) / 2},
-    { x: ((width / 32) / 2) + 2, y: (height / 32) / 2},
-  ]
-}
+snake = setSnake();
 
-setInterval(game, 100);
-
+food = setFood(Math.floor(Math.random() * (width / 32)), Math.floor(Math.random() * (height / 32)));
+setInterval(game, 60);
 function game() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawSnake();
+  setFood(food.x, food.y);
   xOffset = snake.tiles[0].x + movment[direction].x;
   yOffset = snake.tiles[0].y + movment[direction].y;
-  console.log(xOffset, yOffset);
   if (xOffset < 0){
     xOffset = (width/32)-1;
   }
@@ -43,12 +35,24 @@ function game() {
   if (yOffset >= height/32) {
     yOffset = 0;
   }
-  snake.tiles.unshift({
-    x: xOffset,
-    y: yOffset
-  });
-  snake.tiles.splice(-1, 1);
-
+  potential_snake_body = snake.tiles.filter(e => e.x == xOffset && e.y == yOffset)
+  if(potential_snake_body.length == 1 && potential_snake_body[0] != snake.tiles[snake.tiles.length-1]){
+    snake = setSnake();
+    direction = 'still';
+  }else{
+    snake.tiles.unshift({
+      x: xOffset,
+      y: yOffset
+    });
+  }
+  if(xOffset == food.x && yOffset == food.y){
+    food = setFood(Math.floor(Math.random() * (width / 32)), Math.floor(Math.random() * (height / 32)));
+  }else{
+    snake.tiles.splice(-1, 1);
+  }
+  if(!!snake.tiles.filter(e => e.x == food.x && e.y == food.y).length){
+    food = setFood(Math.floor(Math.random() * (width / 32)), Math.floor(Math.random() * (height / 32)));
+  }
 }
 
 
@@ -59,16 +63,16 @@ function getKeyBoardDown(event) {
     keycode = (keyDownEvent.which) ? keyDownEvent.which : keyDownEvent.keyCode;
   switch (keycode) {
     case 37:
-      direction = 'left';
+      if(direction !== 'right') direction = 'left';
       break;
     case 38:
-      direction = 'up';
+      if(direction !== 'down') direction = 'up';
       break;
     case 39:
-      direction = 'right';
+      if(direction !== 'left') direction = 'right';
       break;
     case 40:
-      direction = 'down';
+      if(direction !== 'up') direction = 'down';
       break;
     default:
       break;
@@ -82,12 +86,21 @@ function drawSnake() {
   }
 }
 
-function initialize() {
-  setSnakeBody(Math.floor((width / 32) / 2) - 2, Math.floor((height / 32) / 2) - 2);
-  setSnakeBody(Math.floor((width / 32) / 2) - 1, Math.floor((height / 32) / 2) - 2);
-  setSnakeBody(Math.floor((width / 32) / 2), Math.floor((height / 32) / 2) - 2);
-  setSnakeBody(Math.floor((width / 32) / 2) + 1, Math.floor((height / 32) / 2) - 2);
-  setSnakeBody(Math.floor((width / 32) / 2) + 2, Math.floor((height / 32) / 2) - 2);
+function setSnake() {
+  return {
+    tiles: [
+      { x: Math.floor((width / 32) / 2) - 2, y: Math.floor((height / 32) / 2) },
+      { x: Math.floor((width / 32) / 2) - 1, y: Math.floor((height / 32) / 2) },
+      { x: Math.floor((width / 32) / 2), y: Math.floor((height / 32) / 2) },
+      { x: Math.floor((width / 32) / 2) + 1, y: Math.floor((height / 32) / 2) },
+      { x: Math.floor((width / 32) / 2) + 2, y: Math.floor((height / 32) / 2) },
+    ]
+  };
+}
+
+function setFood(x, y) {
+  ctx.clearRect(32 * x, 32 * y, 32, 32);
+  return {x: x, y: y};
 }
 
 function setSnakeHead(x, y) {
