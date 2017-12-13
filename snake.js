@@ -2,10 +2,9 @@ canvas = document.getElementById('layer1');
 ctx = canvas.getContext('2d');
 ctx.beginPath();
 ctx.fillRect(0, 0, canvas.width, canvas.height);
-var head_tail = new Image();
-head_tail.src = 'snake_head_tail.png';
 direction = 'still';
-real_direction = 'still';
+can_change = true;
+god_mode = true;
 movment = {
   'left': {x: -1, y: 0},
   'up': {x: 0, y: -1},
@@ -17,13 +16,14 @@ movment = {
 snake = setSnake();
 
 food = setFood(Math.floor(Math.random() * (width / 32)), Math.floor(Math.random() * (height / 32)));
-setInterval(game, 60);
+setCompletion();
+setInterval(game, 70);
 function game() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawSnake();
   setFood(food.x, food.y);
-  xOffset = snake.tiles[0].x + movment[real_direction].x;
-  yOffset = snake.tiles[0].y + movment[real_direction].y;
+  xOffset = snake.tiles[0].x + movment[direction].x;
+  yOffset = snake.tiles[0].y + movment[direction].y;
   if (xOffset < 0){
     xOffset = (width/32)-1;
   }
@@ -40,14 +40,14 @@ function game() {
   if (potential_snake_body.length == 1 && potential_snake_body[0] != snake.tiles[snake.tiles.length - 1]){
     snake = setSnake();
     direction = 'still';
-    real_direction = 'still';
+    can_change = true;
     setCompletion();
   }else{
     snake.tiles.unshift({
       x: xOffset,
       y: yOffset
     });
-    real_direction = direction;
+    can_change = true;
   }
   if(xOffset == food.x && yOffset == food.y){
     food = setFood(Math.floor(Math.random() * (width / 32)), Math.floor(Math.random() * (height / 32)));
@@ -68,20 +68,28 @@ function getKeyBoardDown(event) {
     keycode = (keyDownEvent.which) ? keyDownEvent.which : keyDownEvent.keyCode;
   switch (keycode) {
     case 37:
-    if (direction == 'still') real_direction = 'left';
-      if(direction !== 'right') direction = 'left';
+      if(direction !== 'right' && can_change){
+        direction = 'left';
+        can_change = false;
+      }
       break;
     case 38:
-    if (direction == 'still') real_direction = 'up';
-      if(direction !== 'down') direction = 'up';
+      if (direction !== 'down' && can_change){
+        direction = 'up';
+        can_change = false;
+      }
       break;
     case 39:
-    if (direction == 'still') real_direction = 'right';
-      if(direction !== 'left') direction = 'right';
+      if (direction !== 'left' && can_change){
+        direction = 'right';
+        can_change = false;
+      }
       break;
     case 40:
-    if (direction == 'still') real_direction = 'down';
-      if(direction !== 'up') direction = 'down';
+      if (direction !== 'up' && can_change){
+        direction = 'down';
+        can_change = false;
+      }
       break;
     default:
       break;
@@ -105,6 +113,16 @@ function setSnake() {
       { x: Math.floor((width / 32) / 2) + 2, y: Math.floor((height / 32) / 2) },
     ]
   };
+}
+
+function setFullSnake() {
+  result = {tiles: []};
+  for (var i = 0; i < width/32; i++) {
+    for (var j = 0; j < height/32; j++) {
+      result.tiles.push({x: i, y: j});
+    }
+  }
+  return result;
 }
 
 function setFood(x, y) {

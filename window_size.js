@@ -1,5 +1,5 @@
-width = 1280;
-height = 736;
+width = 800;
+height = 512;
 
 width = width - (width%32);
 height = height - (height%32);

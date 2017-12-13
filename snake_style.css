@@ -1,9 +1,9 @@
 body {
-  background-color: white;
+  background-color: #1e1e1e;
 }
 
 #layer2 {
-  margin-top: 100px;
+  margin-top: 6%;
   position: absolute;
   margin-left: auto;
   margin-right: auto;
@@ -14,7 +14,7 @@ body {
 }
 
 #layer1 {
-  margin-top: 100px;
+  margin-top: 6%;
   position: absolute;
   margin-left: auto;
   margin-right: auto;
@@ -24,8 +24,11 @@ body {
 
 #comp {
   position: absolute;
-  margin-left: auto;
-  margin-right: auto;
+  text-align: center;
+  margin: 0;
+  margin-top: 20px;
   left: 0;
   right: 0;
+  color: #cecece;
+  font-family: 'Inconsolata', monospace;
 }
