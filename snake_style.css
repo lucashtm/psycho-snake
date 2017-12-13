@@ -1,11 +1,5 @@
 body {
   background-color: white;
-  -webkit-animation-name: background;
-  -webkit-animation-duration: 4s;
-  -webkit-animation-iteration-count: infinite;
-  animation-name: background;
-  animation-duration: 4s;
-  animation-iteration-count: infinite;
 }
 
 #layer2 {
@@ -21,6 +15,14 @@ body {
 
 #layer1 {
   margin-top: 100px;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
+
+#comp {
   position: absolute;
   margin-left: auto;
   margin-right: auto;

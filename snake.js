@@ -5,6 +5,7 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 var head_tail = new Image();
 head_tail.src = 'snake_head_tail.png';
 direction = 'still';
+real_direction = 'still';
 movment = {
   'left': {x: -1, y: 0},
   'up': {x: 0, y: -1},
@@ -21,8 +22,8 @@ function game() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   drawSnake();
   setFood(food.x, food.y);
-  xOffset = snake.tiles[0].x + movment[direction].x;
-  yOffset = snake.tiles[0].y + movment[direction].y;
+  xOffset = snake.tiles[0].x + movment[real_direction].x;
+  yOffset = snake.tiles[0].y + movment[real_direction].y;
   if (xOffset < 0){
     xOffset = (width/32)-1;
   }
@@ -36,17 +37,21 @@ function game() {
     yOffset = 0;
   }
   potential_snake_body = snake.tiles.filter(e => e.x == xOffset && e.y == yOffset)
-  if(potential_snake_body.length == 1 && potential_snake_body[0] != snake.tiles[snake.tiles.length-1]){
+  if (potential_snake_body.length == 1 && potential_snake_body[0] != snake.tiles[snake.tiles.length - 1]){
     snake = setSnake();
     direction = 'still';
+    real_direction = 'still';
+    setCompletion();
   }else{
     snake.tiles.unshift({
       x: xOffset,
       y: yOffset
     });
+    real_direction = direction;
   }
   if(xOffset == food.x && yOffset == food.y){
     food = setFood(Math.floor(Math.random() * (width / 32)), Math.floor(Math.random() * (height / 32)));
+    setCompletion();
   }else{
     snake.tiles.splice(-1, 1);
   }
@@ -63,15 +68,19 @@ function getKeyBoardDown(event) {
     keycode = (keyDownEvent.which) ? keyDownEvent.which : keyDownEvent.keyCode;
   switch (keycode) {
     case 37:
+    if (direction == 'still') real_direction = 'left';
       if(direction !== 'right') direction = 'left';
       break;
     case 38:
+    if (direction == 'still') real_direction = 'up';
       if(direction !== 'down') direction = 'up';
       break;
     case 39:
+    if (direction == 'still') real_direction = 'right';
       if(direction !== 'left') direction = 'right';
       break;
     case 40:
+    if (direction == 'still') real_direction = 'down';
       if(direction !== 'up') direction = 'down';
       break;
     default:
@@ -109,4 +118,16 @@ function setSnakeHead(x, y) {
 
 function setSnakeBody(x, y) {
   ctx.clearRect(32 * x, 32 * y, 32, 32);
+}
+
+function completion() {
+  return snake.tiles.length * (100/(width*height))*32*32;
+}
+
+function setCompletion() {
+  document.getElementById('comp').innerHTML = round(completion(), 2) + '%';
+}
+
+function round(value, decimals) {
+  return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
 }
